@@ -45,7 +45,7 @@ while True:
     hour = i.hour
     minute = i.minute
 
-    cur.execute("""INSERT INTO weather_data(
+    cur.execute("""INSERT INTO data(
                 day,month,year,hour,minute,temp,hum,press) VALUES(
                 day,month,year,hour,minute,temp,hum,press
                 )""")
