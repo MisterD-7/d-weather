@@ -13,7 +13,7 @@ import sqlite3 as sql
 conn = sql.connect("weather_data.db")
 cur = conn.cursor()
 
-cur.execute("""CREATE TABLE data (
+cur.execute("""CREATE TABLE IF NOT EXISTS wheater_data (
                day integer,
                month integer,
                year integer,
