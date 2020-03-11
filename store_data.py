@@ -6,7 +6,7 @@ import time
 import sqlite3 as sql
 
 import Adafruit_DHT as dht
-import Adafruit_BMP.BMP085 as bmp
+# import Adafruit_BMP.BMP085 as bmp
 
 
 i = datetime.datetime.now()
@@ -31,23 +31,48 @@ def read_temp():
   # press = bmp_sensor.read_temperature()
   # return press
 
-while True:
-    hum = read_hum()
-    temp = read_temp()
-    # press = read_press()
+def create_table(cur, create_statement):
+	cur.execute(create_statement)
 
-    conn = sql.connect("weather_data.db")
+def main():
+    conn = sql.connect("d-weather.db")
     cur = conn.cursor()
-    i = datetime.datetime.now()
-    day = i.day
-    month = i.month
-    year = i.year
-    hour = i.hour
-    minute = i.minute
 
-    cur.execute("""INSERT INTO data(
-                day,month,year,hour,minute,temp,hum) VALUES(
-                day,month,year,hour,minute,temp,hum
-                )""")
+    create_weather_table = """CREATE TABLE IF NOT EXISTS weather(
+								day INTEGER,
+								month INTEGER,
+								year INTERGER,
+								hour INTEGER,
+								minute INTEGER,
+								temperature REAL,
+								humidity REAL,
+								pressure REAL,
+			    			  );"""
 
-    time.sleep(1800)  # 30 min delay
+
+
+    if conn is not None:
+	    create_table(cur, create_weather_table)
+
+
+    while True:
+        hum = read_hum()
+        temp = read_temp()
+    	# press = read_press()
+
+        i = datetime.datetime.now()
+        v_day = i.day
+        v_month = i.month
+        v_year = i.year
+        v_hour = i.hour
+        v_minute = i.minute
+
+        cur.execute("""INSERT INTO weather(
+                	day,month,year,hour,minute,temperature,humidity) VALUES(
+                	v_day,v_month,v_year,v_hour,v_minute,temp,hum
+                	)""")
+        print(temp,hum)
+
+        time.sleep(60)  # 30 min delay
+
+main()
