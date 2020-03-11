@@ -35,27 +35,22 @@ def create_table(cur, create_statement):
 	cur.execute(create_statement)
 
 def main():
-    conn = sql.connect("d-weather.db")
-    cur = conn.cursor()
-
-    create_weather_table = """CREATE TABLE IF NOT EXISTS weather(
-								day INTEGER,
-								month INTEGER,
-								year INTERGER,
-								hour INTEGER,
-								minute INTEGER,
-								temperature REAL,
-								humidity REAL,
-								pressure REAL,
-			    			  );"""
-
-
-
-    if conn is not None:
-	    create_table(cur, create_weather_table)
-
-
     while True:
+        conn = sql.connect("d-weather.db")
+        cur = conn.cursor()
+
+        if conn is not None:
+	        cur.execute("""CREATE TABLE IF NOT EXISTS weather(
+	                          day INTEGER,
+	                          month INTEGER,
+	                          year INTEGER,
+	                          hour INTEGER,
+	                          minute INTEGER,
+	                          temperature REAL,
+	                          humidity REAL,
+	                          pressure REAL);""")
+
+
         hum = read_hum()
         temp = read_temp()
     	# press = read_press()
@@ -68,10 +63,14 @@ def main():
         v_minute = i.minute
 
         cur.execute("""INSERT INTO weather(
-                	day,month,year,hour,minute,temperature,humidity) VALUES(
+                	day,month,year,hour,minut,temperature,humidity) VALUES (
                 	v_day,v_month,v_year,v_hour,v_minute,temp,hum
-                	)""")
+                	);""")
+
         print(temp,hum)
+
+        conn.commit()
+        conn.close()
 
         time.sleep(60)  # 30 min delay
 
